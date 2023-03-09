@@ -1,0 +1,188 @@
+{% extends "kitchen/_layout.html" %} {% block main %}
+
+<!-- Product image -->
+<div flex="~" align="items-center" m="b-4">
+  <div w="30" h="min-30" bg="gray-200" rounded="md">
+    <img
+      src="/kitchens/{{data.kitchen.id}}/images/{{data.product.id}}"
+      alt=""
+    />
+  </div>
+
+  <!-- Grocery amount adjuster -->
+  {% include "kitchen/grocery/amount.partial.html" %}
+</div>
+
+<h2 text="2xl" font="medium" m="b-12">{{data.product.name}}</h2>
+
+<form hx-post="{{data.product.id}}/buy">
+  <!-- Cart adjuster -->
+  <div text="gray-400 xs center" m="b-2">Select an amount to buy</div>
+  <div
+    x-data="{ amount: {{data.product.amount or 1}} }"
+    flex="~"
+    justify="between"
+    w="40"
+    m="x-auto b-10"
+  >
+    <button
+      @click.prevent="amount = amount == 1 ? 1 : amount - 1"
+      rounded="full"
+      bg="gray-100 hover:gray-200"
+      p="2"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        height="24"
+        width="24"
+        fill="gray-700"
+      >
+        <path
+          d="M6 13q-.425 0-.713-.288Q5 12.425 5 12t.287-.713Q5.575 11 6 11h12q.425 0 .712.287.288.288.288.713t-.288.712Q18.425 13 18 13Z"
+        />
+      </svg>
+    </button>
+
+    <span text="3xl" font="medium" select="none" x-text="amount">
+      {{data.product.amount or 1}}
+    </span>
+    <input type="hidden" name="amount" :value="amount" />
+
+    <button
+      @click.prevent="amount += 1"
+      rounded="full"
+      bg="gray-100 hover:gray-200"
+      p="2"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        height="24"
+        width="24"
+        fill="gray-700"
+      >
+        <path
+          d="M12 19q-.425 0-.712-.288Q11 18.425 11 18v-5H6q-.425 0-.713-.288Q5 12.425 5 12t.287-.713Q5.575 11 6 11h5V6q0-.425.288-.713Q11.575 5 12 5t.713.287Q13 5.575 13 6v5h5q.425 0 .712.287.288.288.288.713t-.288.712Q18.425 13 18 13h-5v5q0 .425-.287.712Q12.425 19 12 19Z"
+        />
+      </svg>
+    </button>
+  </div>
+
+  <div m="b-10 x-auto" w="min-content" x-data="{checked: true}">
+    <div text="xs gray-400" m="b-1">Enter an expiry date</div>
+    <div flex="~" space="x-1" m="b-4" p="2" border="~ gray-400" rounded="md">
+      <input
+        x-data="date_input(31)"
+        @click="$el.select()"
+        @keydown="newVal = newValue($el.value, $event.key);
+        if (newVal) {
+          $el.value = newVal;
+          $event.preventDefault();
+        }"
+        type="text"
+        name="dd"
+        value="01"
+        w="12"
+        outline="focus:transparent"
+        rounded="md"
+        text="center disabled:gray-400"
+        :disabled="!checked"
+      />
+      <span text="xl gray-400">/</span>
+      <input
+        x-data="date_input(12)"
+        @click="$el.select()"
+        @keydown="newVal = newValue($el.value, $event.key);
+        if (newVal) {
+          $el.value = newVal;
+          $event.preventDefault();
+        }"
+        type="text"
+        name="mm"
+        value="01"
+        w="12"
+        outline="focus:transparent"
+        rounded="md"
+        text="center disabled:gray-400"
+        :disabled="!checked"
+      />
+      <span text="xl gray-400">/</span>
+      <input
+        x-data="date_input(9999)"
+        @click="$el.select()"
+        @keydown="newVal = newValue($el.value, $event.key);
+        if (newVal) {
+          $el.value = newVal;
+          $event.preventDefault();
+        }"
+        type="text"
+        name="yyyy"
+        value="2023"
+        w="18"
+        outline="focus:transparent"
+        rounded="md"
+        text="center disabled:gray-400"
+        :disabled="!checked"
+      />
+    </div>
+    <label flex="~" space="x-2" p="l-2">
+      <div
+        rounded="full"
+        border="~ 0.5 gray-900"
+        :bg="checked ? 'gray-900' : 'light-50'"
+        bg="gray-900"
+        w="min-content"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          height="20"
+          viewBox="0 96 960 960"
+          width="20"
+          fill="light-50"
+        >
+          <path
+            d="M383 812.001q-10.261 0-20.305-4.131-10.043-4.13-18.739-12.826l-169-169q-15.957-15.957-15.457-39.544.5-23.587 16.457-39.544 15.957-15.957 39.609-15.957 23.653 0 39.609 15.957L385 676.782l320.826-320.826q15.956-15.957 38.544-16.239 22.587-.283 39.109 16.239 15.956 15.957 15.956 38.827 0 22.869-15.956 38.826L422.044 795.044q-8.696 8.696-18.739 12.826-10.044 4.131-20.305 4.131Z"
+          />
+        </svg>
+      </div>
+      <input
+        type="checkbox"
+        name="include_expiry"
+        x-model="checked"
+        display="hidden"
+      />
+      <span select="none" text="gray-700 sm">Include expiry date</span>
+    </label>
+  </div>
+
+  <!-- Buy button -->
+  <button
+    hx-trigger="click"
+    class="group"
+    text="light-50 hover:gray-800"
+    font="medium"
+    rounded="md"
+    p="x-4 y-2"
+    m="x-auto"
+    flex="~"
+    space="x-2"
+    border="2 gray-800"
+    bg="gray-800 hover:light-50"
+    whitespace="nowrap"
+    transition="duration-100"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      height="24"
+      width="24"
+      fill="light-50 group-hover:gray-800"
+      transition="duration-100"
+    >
+      <path
+        d="M7.15 21.55q-.725 0-1.237-.512Q5.4 20.525 5.4 19.8t.513-1.238q.512-.512 1.237-.512.725 0 1.237.512.513.513.513 1.238t-.513 1.238q-.512.512-1.237.512Zm9.7 0q-.725 0-1.237-.512-.513-.513-.513-1.238t.513-1.238q.512-.512 1.237-.512.725 0 1.237.512.513.513.513 1.238t-.513 1.238q-.512.512-1.237.512ZM6.025 5.75l2.525 5.3h7l2.775-5.025q.05-.1 0-.187-.05-.088-.15-.088Zm1.125 10.8q-1 0-1.5-.862-.5-.863-.025-1.713L7.05 11.4 3.4 3.75H2.225q-.3 0-.513-.213Q1.5 3.325 1.5 3q0-.325.212-.538.213-.212.538-.212h1.525q.25 0 .475.137.225.138.35.388l.7 1.475h13.875q.7 0 .988.512.287.513-.013 1.088l-3.225 5.8q-.225.425-.625.662-.4.238-.9.238H8.1l-1.15 2.125q-.075.125-.012.25.062.125.212.125h10.725q.3 0 .513.225.212.225.212.525 0 .325-.212.537-.213.213-.538.213Zm1.4-5.5h7Z"
+      ></path>
+    </svg>
+    <span>Buy</span>
+  </button>
+</form>
+
+{% endblock %}

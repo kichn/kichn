@@ -1,0 +1,33 @@
+{% extends "kitchen/_layout.html" %} {% block main %}
+<div m="b-12" flex="~" space="x-2">
+  <input
+    hx-post="inventory/search"
+    hx-trigger="keyup changed delay:200ms"
+    hx-target="#inventory-list"
+    hx-swap="outerHTMl"
+    type="text"
+    id="name"
+    placeholder="Search for a product..."
+    name="query"
+    border="~ gray-400"
+    rounded="md"
+    p="y-2 x-3"
+    w="full"
+  />
+  <a
+    href="inventory"
+    display="block"
+    text="light-50 hover:gray-800"
+    font="medium"
+    rounded="md"
+    p="x-4 y-2"
+    border="2 gray-800"
+    bg="gray-800 hover:light-50"
+    whitespace="nowrap"
+    transition="duration-75"
+  >
+    Sorting by category
+  </a>
+</div>
+
+{% include "kitchen/inventory/list.partial.html" %} {% endblock %}

@@ -1,0 +1,33 @@
+{% extends "kitchen/_layout.html" %} {% block main %}
+
+<form hx-post="settings/share" hx-target="#members-list" m="b-12">
+  <label for="email" text="xs gray-400">Share this kitchen</label>
+  <div flex="~" space="x-2">
+    <input
+      type="text"
+      id="email"
+      placeholder="john@gmail.com"
+      name="email"
+      border="~ gray-400"
+      rounded="md"
+      p="y-2 x-3"
+      w="full"
+    />
+    <button
+      type="submit"
+      text="light-50 hover:gray-800"
+      font="medium"
+      rounded="md"
+      p="x-4 y-2"
+      border="2 gray-800"
+      bg="gray-800 hover:light-50"
+      whitespace="nowrap"
+      transition="duration-100"
+    >
+      Share
+    </button>
+  </div>
+</form>
+
+<div id="members-list">{% include "kitchen/settings/admin.partial.html" %}</div>
+{% endblock %}

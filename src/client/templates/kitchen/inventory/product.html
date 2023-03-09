@@ -1,0 +1,39 @@
+{% extends "kitchen/_layout.html" %} {% block main %}
+
+<!-- Product image -->
+<div pos="relative" m="b-4">
+  <div w="30" h="min-30" bg="gray-200" rounded="md">
+    <img
+      src="/kitchens/{{data.kitchen.id}}/images/{{data.product.id}}"
+      alt=""
+    />
+  </div>
+</div>
+
+<h2 text="2xl" font="medium" m="b-12">{{data.product.name}}</h2>
+
+<form hx-target="#remover" flex="~ col" align="content-center">
+  <span text="xs gray-400" m="b-4">Select some products</span>
+
+  {% include "kitchen/inventory/product.partial.html" %}
+
+  <div id="remover" flex="~" align="items-center" m="x-auto">
+    <button
+      hx-post="{{data.product.id}}/use"
+      type="submit"
+      text="light-50 hover:gray-800"
+      font="medium"
+      rounded="md"
+      p="x-4 y-2"
+      m="x-auto"
+      border="2 gray-800"
+      bg="gray-800 hover:light-50"
+      whitespace="nowrap"
+      transition="duration-100"
+    >
+      Remove from inventory
+    </button>
+  </div>
+</form>
+
+{% endblock %}
